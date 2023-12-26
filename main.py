@@ -1,43 +1,36 @@
-from wordcloud import WordCloud
+import requests
 import numpy as np
 from PIL import Image
-import requests
 from bs4 import BeautifulSoup
+from wordcloud import WordCloud
 
 # Mask image
-mask = Image.open("x.jpg")
-maske_veri_2 = np.array(mask)
+mask_image_location = input("Enter the mask image location: ")
+mask = Image.open(f"{mask_image_location}")
+mask_arr = np.array(mask)
 
 # Website URL
-website_url = "https://www.kunstuni-linz.at/"
+website_url = input("Enter the URL: ")
 
 # Fetch content from the website
-response = requests.get(website_url)
-html_content = response.text
+html_content = requests.get(website_url).text
 
 # Parse HTML content with BeautifulSoup
-soup = BeautifulSoup(html_content, 'html.parser')
-website_text = soup.get_text()
+website_text = BeautifulSoup(html_content, 'html.parser').get_text()
 
 # Preprocess the text
-website_text = website_text.lower()
-silinecek_ifadeler_2 = ["\"", "'",
-                        "xml version='1.0' encoding='utf-8'?", "html", ""]
-for ifade in silinecek_ifadeler_2:
-    website_text = website_text.replace(ifade, "")
-
-# Remove empty lines
-website_text_lines = [line.strip()
-                      for line in website_text.splitlines() if line.strip()]
-website_text = '\n'.join(website_text_lines)
+delete_text = ["\"", "//", "'", "*", "\n", "\t",
+               "xml version='1.0' encoding='utf-8'?", "html", ""]
+for text in delete_text:
+    website_text = website_text.replace(text, "")
 
 # Save the preprocessed text to a file
-with open("[Icerik_Website].txt", "w", encoding="utf-8") as dosya:
-    dosya.writelines(website_text)
+with open("content.txt", "w", encoding="utf-8") as file:
+    file.writelines(website_text)
 
 # Generate word cloud
-mb = WordCloud(width=2000, height=2000,
-               mask=maske_veri_2).generate(website_text)
+mb = WordCloud(width=1000, height=1000, mask=mask_arr).generate(website_text)
 
 # Save the word cloud image
-mb.to_file("[Icerik_Gorsellestirme_Website].jpg")
+save_file = input("Enter output file name: ")
+mb.to_file(f"{save_file}.jpg")
