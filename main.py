@@ -59,7 +59,7 @@ for website_url in website_urls:
             writer.writerow(['Most Common Words', 'Frequency'])
             writer.writerow([])
 
-        writer.writerow(['Website', website_url])
+        writer.writerow(['WEB Adress', website_url])
 
         for word, freq in top_20_words:
             writer.writerow([word, freq])
