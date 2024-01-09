@@ -1,7 +1,8 @@
 import csv
 from collections import Counter
 
-csv_file_name = "results.csv"
+csv_file_name = "results_copy.csv"
+output_csv_file = "results_common_words_copy.csv"
 
 website_words = {}
 with open(csv_file_name, mode='r', encoding='utf-8') as csv_file:
@@ -26,20 +27,24 @@ with open(csv_file_name, mode='r', encoding='utf-8') as csv_file:
     if current_website:
         website_words[current_website] = website_word_list
 
-# Create a dictionary to store the websites where each word is common
 common_words_tracker = {word: set()
                         for word in set.union(*map(set, website_words.values()))}
 
-# Update the tracker based on common words
 for website, words in website_words.items():
     for word in words:
         common_words_tracker[word].add(website)
 
-# Filter words that are common between at least 2 websites
 common_words_between_websites = {
     word: websites for word, websites in common_words_tracker.items() if len(websites) >= 2}
 
-# Print the results
-for word, websites in common_words_between_websites.items():
-    print(
-        f"Word '{word}' is common between {len(websites)} website(s): {', '.join(websites)}")
+sorted_common_words = sorted(common_words_between_websites.items(
+), key=lambda x: (len(x[1]), x[0]), reverse=True)
+
+with open(output_csv_file, mode='w', encoding='utf-8', newline='') as output_csv:
+    writer = csv.writer(output_csv)
+    writer.writerow(['Common Word', 'Websites'])
+
+    for word, websites in sorted_common_words:
+        writer.writerow([word, ', '.join(sorted(websites))])
+
+print(f"Common words among websites saved to {output_csv_file}")
