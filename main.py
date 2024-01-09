@@ -13,9 +13,22 @@ nltk.download('stopwords')
 nltk.download('punkt')
 
 website_urls = [
-    "https://www.constantcontact.com/",
-    "https://www.interstellarrecords.at/",
-    "https://kuprosauwald.org/"
+    "https://www.fuckhead.at/",
+    "http://www.interstellarrecords.at/index.php",
+    "https://kuprosauwald.org/",
+    "https://röda.at/der-verein/",
+    "http://www.grgr.at/",
+    "https://www.grgr.at/aboutme/",
+    "https://qujochoe.org/about/",
+    "https://verenamayrhofer.at/",
+    "http://hoerstadt.at/uber-uns/",
+    "https://www.schlot.info/",
+    "https://tinaleisch.at/index.php/tinaleisch/",
+    "https://kunstraum.at/en/how-we-are/",
+    "https://kunstraum.at/wer-wir-sind/",
+    "https://www.kuva.at/",
+    "https://jmyyri.com/recliners",
+    "https://www.anna-kraher.de/#about"
 ]
 
 csv_file_name = "results.csv"
@@ -34,7 +47,7 @@ for website_url in website_urls:
     stop_words = stop_words_german.union(stop_words_english)
 
     filtered_text = ' '.join([word for word in nltk.word_tokenize(
-        website_text) if word.lower() not in stop_words and not any(char.isdigit() for char in word) and len(word) > 2])
+        website_text) if word.lower() not in stop_words and not any(char.isdigit() for char in word) and len(word) > 2 and len(word) < 30])
 
     word_freq = Counter(filtered_text.split())
     top_20_words = word_freq.most_common(20)
